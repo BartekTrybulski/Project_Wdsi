@@ -8,31 +8,36 @@ import numpy as np
 import cv2
 from sklearn.ensemble import RandomForestClassifier
 import pandas
+import xml.etree.ElementTree as et
 
-# translation of 43 classes to 3 classes:
 # 0 - prohibitory
 # 1 - warning
 # 2 - mandatory
 # -1 - not used
 class_id_to_new_class_id = {"stop": 0, "speedlimit": 0, "crosswalk": 2, "trafficlight": 0}
 
-def load_data(path, filename):
+def load_data(path, path_image):
     """
     Loads data from disk.
     @param path: Path to dataset directory.
     @param filename: Filename of csv file with information about samples.
     @return: List of dictionaries, one for every sample, with entries "image" (np.array with image) and "label" (class_id).
     """
-    entry_list = pandas.read_csv(os.path.join(path, filename))
 
     data = []
-    for xml in 
-        class_id = class_id_to_new_class_id[entry['ClassId']]
-        image_path = entry['Path']
+
+    for x in (os.listdir(path)):
+        tree = et.parse(os.path.join(path, x))
+        root = tree.getroot()
+
+        for y in root.findall('object'):
+                classId = y.find('name').text
+                class_id = class_id_to_new_class_id[classId]
+                image_path = os.getcwd() + '\\' + path_image + '\\' + root[1].text
 
         if class_id != -1:
-            image = cv2.imread(os.path.join(path, image_path))
-            data.append({'image': image, 'label': class_id})
+                image = cv2.imread(os.path.join(path, image_path))
+                data.append({'image': image, 'label': class_id})
 
     return data
 
@@ -171,7 +176,7 @@ def display(data):
                     "desc" (np.array with descriptor), and "label_pred".
     @return: Nothing.
     """
-    n_classes = 3
+    n_classes = 2
 
     corr = {}
     incorr = {}
@@ -242,23 +247,28 @@ def balance_dataset(data, ratio):
 
 
 def main():
-    data_train = load_data('./', 'Train5_1.csv')
+
+    data_train = load_data('annotations_train', 'images_train')
+
     print('train dataset before balancing:')
     display_dataset_stats(data_train)
     data_train = balance_dataset(data_train, 1.0)
     print('train dataset after balancing:')
     display_dataset_stats(data_train)
 
-    data_test = load_data('./', 'Test.csv')
+
+    data_test = load_data('annotations_test', 'images_test')
     print('test dataset before balancing:')
     display_dataset_stats(data_test)
     data_test = balance_dataset(data_test, 1.0)
     print('test dataset after balancing:')
     display_dataset_stats(data_test)
 
+    print('Test data has been loaded')
+
     # you can comment those lines after dictionary is learned and saved to disk.
-    #print('learning BoVW')
-    #learn_bovw(data_train)
+    print('learning BoVW')
+    learn_bovw(data_train)
 
     print('extracting train features')
     data_train = extract_features(data_train)
