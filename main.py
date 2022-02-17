@@ -14,7 +14,7 @@ import xml.etree.ElementTree as et
 # 1 - warning
 # 2 - mandatory
 # -1 - not used
-class_id_to_new_class_id = {"stop": -1, "speedlimit": 0, "crosswalk": 2, "trafficlight": -1}
+class_id_to_new_class_id = {"crosswalk": 2, "other": 0}
 
 def load_data(path, path_image):
     """
@@ -31,9 +31,12 @@ def load_data(path, path_image):
         root = tree.getroot()
 
         for y in root.findall('object'):
-                classId = y.find('name').text
-                class_id = class_id_to_new_class_id[classId]
-                image_path = os.getcwd() + '\\' + path_image + '\\' + root[1].text
+            classId = y.find('name').text
+            if classId != 'crosswalk':
+                classId = 'other'
+
+            class_id = class_id_to_new_class_id[classId]
+            image_path = os.getcwd() + '\\' + path_image + '\\' + root[1].text
 
         if class_id != -1:
                 image = cv2.imread(os.path.join(path, image_path))
@@ -176,7 +179,7 @@ def display(data):
                     "desc" (np.array with descriptor), and "label_pred".
     @return: Nothing.
     """
-    n_classes = 3
+    n_classes = 1
 
     corr = {}
     incorr = {}
@@ -249,7 +252,6 @@ def balance_dataset(data, ratio):
 def main():
 
     data_train = load_data('Train/annotations', 'Train/images')
-
     print('train dataset before balancing:')
     display_dataset_stats(data_train)
     data_train = balance_dataset(data_train, 1.0)
