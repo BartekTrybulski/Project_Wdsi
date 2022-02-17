@@ -14,7 +14,7 @@ import xml.etree.ElementTree as et
 # 1 - warning
 # 2 - mandatory
 # -1 - not used
-class_id_to_new_class_id = {"stop": 0, "speedlimit": 0, "crosswalk": 2, "trafficlight": 0}
+class_id_to_new_class_id = {"stop": -1, "speedlimit": 0, "crosswalk": 2, "trafficlight": -1}
 
 def load_data(path, path_image):
     """
@@ -176,7 +176,7 @@ def display(data):
                     "desc" (np.array with descriptor), and "label_pred".
     @return: Nothing.
     """
-    n_classes = 2
+    n_classes = 3
 
     corr = {}
     incorr = {}
