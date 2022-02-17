@@ -248,7 +248,7 @@ def balance_dataset(data, ratio):
 
 def main():
 
-    data_train = load_data('annotations_train', 'images_train')
+    data_train = load_data('Train/annotations', 'Train/images')
 
     print('train dataset before balancing:')
     display_dataset_stats(data_train)
@@ -257,7 +257,7 @@ def main():
     display_dataset_stats(data_train)
 
 
-    data_test = load_data('annotations_test', 'images_test')
+    data_test = load_data('Test/annotations', 'Test/images')
     print('test dataset before balancing:')
     display_dataset_stats(data_test)
     data_test = balance_dataset(data_test, 1.0)
