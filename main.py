@@ -8,14 +8,15 @@ import numpy as np
 import cv2
 from sklearn.ensemble import RandomForestClassifier
 import xml.etree.ElementTree as et
+from sklearn.metrics import confusion_matrix
 
 class_id_to_new_class_id = {"crosswalk": 2, "other": 0}
 
 def load_data(path, path_image):
     """
     Loads data from disk.
-    @param path: Path to dataset directory.
-    @param filename: Filename of csv file with information about samples.
+    @param path: Path to xml file
+    @param path_image: Path to image
     @return: List of dictionaries, one for every sample, with entries "image" (np.array with image) and "label" (class_id).
     """
 
@@ -25,17 +26,29 @@ def load_data(path, path_image):
         tree = et.parse(os.path.join(path, x))
         root = tree.getroot()
 
+        for i in root.findall('size'):
+            width = float(i.find('width').text)
+            height = float(i.find('height').text)
+
         for y in root.findall('object'):
             classId = y.find('name').text
             if classId != 'crosswalk':
                 classId = 'other'
 
             class_id = class_id_to_new_class_id[classId]
+
+            for z in y.findall('bndbox'):
+                x_min = int(z.find('xmin').text)
+                x_max = int(z.find('xmax').text)
+                y_min = int(z.find('ymin').text)
+                y_max = int(z.find('ymax').text)
+
             image_path = os.getcwd() + '\\' + path_image + '\\' + root[1].text
 
-        if class_id != -1:
+            if x_max - x_min >= 0.1*width and y_max - y_min >= 0.1*height:
                 image = cv2.imread(os.path.join(path, image_path))
-                data.append({'image': image, 'label': class_id, 'file': x})
+                cutimg = image[int(y_min) : int(y_max), int(x_min) : int(x_max)]
+                data.append({'image': cutimg, 'label': class_id, 'file': x,'xmin': x_min,'xmax': x_max ,'ymin': y_min,'ymax': y_max})
 
     return data
 
@@ -46,7 +59,7 @@ def learn_bovw(data):
     @param data: List of dictionaries, one for every sample, with entries "image" (np.array with image) and "label" (class_id).
     @return: Nothing
     """
-    dict_size = 689
+    dict_size = 128
     bow = cv2.BOWKMeansTrainer(dict_size)
 
     sift = cv2.SIFT_create()
@@ -161,10 +174,14 @@ def evaluate(data):
             real.append(sample['label'])
             if sample['label_pred'] == sample['label']:
                 correct += 1
+                if sample['label_pred'] == class_id_to_new_class_id['crosswalk']:
+                    print(sample['file'], sample['xmin'], sample['xmax'], sample['ymin'], sample['ymax'])
             else:
                 incorrect += 1
 
     print('score = %.3f' % (correct / max(correct + incorrect, 1)))
+    conf_matrix = confusion_matrix(real, eval)
+    print(conf_matrix)
     return
 
 
@@ -175,7 +192,7 @@ def display(data):
                     "desc" (np.array with descriptor), and "label_pred".
     @return: Nothing.
     """
-    n_classes = 1
+    n_classes = 2
 
     corr = {}
     incorr = {}
@@ -186,11 +203,11 @@ def display(data):
                 if sample['label_pred'] not in corr:
                     corr[sample['label_pred']] = []
                 corr[sample['label_pred']].append(idx)
+
             else:
                 if sample['label_pred'] not in incorr:
                     incorr[sample['label_pred']] = []
                 incorr[sample['label_pred']].append(idx)
-                print(sample['file'])
 
     grid_size = 8
 
@@ -210,12 +227,9 @@ def display(data):
     image_corr = draw_grid(corr_disp, n_classes, grid_size, 800, 600)
     image_incorr = draw_grid(incorr_disp, n_classes, grid_size, 800, 600)
 
-
     cv2.imshow('images correct', image_corr)
     cv2.imshow('images incorrect', image_incorr)
     cv2.waitKey()
-
-    # this function does not return anything
     return
 
 
@@ -265,11 +279,9 @@ def main():
     print('test dataset after balancing:')
     display_dataset_stats(data_test)
 
-    print('Test data has been loaded')
-
     # you can comment those lines after dictionary is learned and saved to disk.
-    #print('learning BoVW')
-    #learn_bovw(data_train)
+    print('learning BoVW')
+    learn_bovw(data_train)
 
     print('extracting train features')
     data_train = extract_features(data_train)
