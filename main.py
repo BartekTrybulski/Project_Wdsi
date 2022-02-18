@@ -7,13 +7,8 @@ import random
 import numpy as np
 import cv2
 from sklearn.ensemble import RandomForestClassifier
-import pandas
 import xml.etree.ElementTree as et
 
-# 0 - prohibitory
-# 1 - warning
-# 2 - mandatory
-# -1 - not used
 class_id_to_new_class_id = {"crosswalk": 2, "other": 0}
 
 def load_data(path, path_image):
@@ -40,7 +35,7 @@ def load_data(path, path_image):
 
         if class_id != -1:
                 image = cv2.imread(os.path.join(path, image_path))
-                data.append({'image': image, 'label': class_id})
+                data.append({'image': image, 'label': class_id, 'file': x})
 
     return data
 
@@ -51,7 +46,7 @@ def learn_bovw(data):
     @param data: List of dictionaries, one for every sample, with entries "image" (np.array with image) and "label" (class_id).
     @return: Nothing
     """
-    dict_size = 128
+    dict_size = 689
     bow = cv2.BOWKMeansTrainer(dict_size)
 
     sift = cv2.SIFT_create()
@@ -141,6 +136,7 @@ def predict(rf, data):
                     "desc" (np.array with descriptor).
     @return: Data with added predicted labels for each sample.
     """
+
     for sample in data:
         if sample['desc'] is not None:
             predict = rf.predict(sample['desc'])
@@ -194,6 +190,8 @@ def display(data):
                 if sample['label_pred'] not in incorr:
                     incorr[sample['label_pred']] = []
                 incorr[sample['label_pred']].append(idx)
+                print(sample['file'])
+
     grid_size = 8
 
     # sort according to classes
@@ -211,6 +209,7 @@ def display(data):
 
     image_corr = draw_grid(corr_disp, n_classes, grid_size, 800, 600)
     image_incorr = draw_grid(incorr_disp, n_classes, grid_size, 800, 600)
+
 
     cv2.imshow('images correct', image_corr)
     cv2.imshow('images incorrect', image_incorr)
@@ -269,8 +268,8 @@ def main():
     print('Test data has been loaded')
 
     # you can comment those lines after dictionary is learned and saved to disk.
-    print('learning BoVW')
-    learn_bovw(data_train)
+    #print('learning BoVW')
+    #learn_bovw(data_train)
 
     print('extracting train features')
     data_train = extract_features(data_train)
