@@ -1,5 +1,5 @@
 # Projekt WDSI
-Ponieżej opisano działanie najważniejszych funkcji programu.
+Poniżej opisano działanie najważniejszych funkcji programu.
 ## load_data
 Funkcja ta wczytuje dane z pilku xml takie jak:
 - nazwa obrazka
