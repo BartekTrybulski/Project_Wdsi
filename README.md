@@ -70,7 +70,7 @@ W zależności od jego wartości wczytywany jest odpowiedni procent danych.
 Najważniejsze wykorzystane funkcje:
 - ***random.sample(data, amount)*** - wybór losowych próbek 
 ## main
-Wywołuje wszystkie wcześniej opisane funkcje, a także wyświetla która z funkcji aktualnie jest wykonywana.
+Wywołuje wszystkie wcześniej opisane funkcje, a także wyświetla która z nich aktualnie jest wykonywana.
 
 Funkcję learn_bovw można zakomentować po pierwszym uruchomieniu programu.
 W takim przypadku słownik będzie wczytywany z pliku voc.npy.
