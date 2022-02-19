@@ -1,5 +1,5 @@
 # Projekt WDSI
-Ponieżej opisano działanie najważniejszych funkcji progamu.
+Ponieżej opisano działanie najważniejszych funkcji programu.
 ## load_data
 Funkcja ta wczytuje dane z pilku xml takie jak:
 - nazwa obrazka
@@ -25,7 +25,7 @@ Najważniejsze wykorzystane funkcje:
 
 
 ## learn_bovw
-Funkcja ta tworzy słownik przy pomocy charakterystycznych punktów ze zdjęć.
+Funkcja ta tworzy słownik przy pomocy charakterystycznych punktów ze obrazków.
 
 Najważniejsze wykorzystane funkcje:
 - ***cv2.BOWKMeansTrainer()*** - tworzy zbiór treningowy, określa jego rozmiar (w programie zmienna bow)
