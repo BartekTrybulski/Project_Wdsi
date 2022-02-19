@@ -8,7 +8,7 @@ Funkcja ta wczytuje dane z pilku xml takie jak:
 - obszar występowania znaku  
 - klasa obrazka.
 
-Następnie obrazek jest przyciany i jeśli jego wymiary są przynajminej wielkości 10% wysokości i szerokości całego obrazka to
+Następnie obrazek jest przycinany i jeśli jego wymiary są przynajminej wielkości 10% wysokości i szerokości całego obrazka to
 paramtery zapisywane są w zmiennej data.
 
 Najważniejsze wykorzystane funkcje:
@@ -25,7 +25,7 @@ Najważniejsze wykorzystane funkcje:
 
 
 ## learn_bovw
-Funkcja ta tworzy słownik przy pomocy charakterystycznych punktów ze obrazków.
+Funkcja ta tworzy słownik przy pomocy charakterystycznych punktów z obrazków.
 
 Najważniejsze wykorzystane funkcje:
 - ***cv2.BOWKMeansTrainer()*** - tworzy zbiór treningowy, określa jego rozmiar (w programie zmienna bow)

@@ -203,8 +203,8 @@ def main():
     display_dataset_stats(data_test)
 
     # you can comment those lines after dictionary is learned and saved to disk.
-    print('learning BoVW')
-    learn_bovw(data_train)
+    #print('learning BoVW')
+    #learn_bovw(data_train)
 
     print('extracting train features')
     data_train = extract_features(data_train)
