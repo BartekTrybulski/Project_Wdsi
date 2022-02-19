@@ -8,29 +8,30 @@ Funkcja ta wczytuje dane z pilku xml takie jak:
 - obszar występowania znaku  
 - klasa obrazka.
 
-Następnie obrazek jest przyciany i jeśli jego wymiary są przynajminej wielkości 10% wyskości i szerokości całego obrazka to
-jego paramtery zapisywane są w zmiennej data.
+Następnie obrazek jest przyciany i jeśli jego wymiary są przynajminej wielkości 10% wysokości i szerokości całego obrazka to
+paramtery zapisywane są w zmiennej data.
 
 Najważniejsze wykorzystane funkcje:
-- ***os.listdir(path)*** - wyszukianie pilków w podnej ścieżce
+- ***os.listdir(path)*** - wyszukiwanie pilków w podnej ścieżce
 - ***et.parse()*** - wczytywanie plików
 - ***getroot()*** - pobieranie korzenia
 - ***findall(label)*** - wyszukiwanie korzeni o podanej nazwie
 - ***find(label).text*** - znajdowanie danego elementu i zwracanie go jako tekst
 - ***image[int(y_min) : int(y_max), int(x_min) : int(x_max)]*** - wycięcie fragmentu obrazka
-- ***class_id_to_new_class_id*** - zmania słowna na numer klasy 
+- ***class_id_to_new_class_id*** - zmania nazwy klasy na numer 
 - ***os.getcwd()*** - zwracenie ścieżki do pliku
 - ***os.path.join(path, filename)*** - połączenie ścieżki z nazwą pliku
 - ***cv2.imread()*** - wczytywanie obrazka
 
 
 ## learn_bovw
+Funkcja ta tworzy słownik przy pomocy charakterystycznych puntków ze zdjęć.
 
 Najważniejsze wykorzystane funkcje:
 - ***cv2.BOWKMeansTrainer()*** - tworzy zbiór treningowy, określa jego rozmiar (w programie zmienna bow)
 - ***cv2.SIFT_create()*** - tworzy klase do wyodrębnienia kluczowych punktów i deskryptorów
 - ***sift.detect()*** - znajduje kluczowe punkty na obrazkach
-- ***sift.compute()*** - oblicza deskryptory dla znalezioch punktów
+- ***sift.compute()*** - oblicza deskryptory dla znalezionych punktów
 - ***bow.add(desc)*** - dodaje opis do zbioru 
 - ***bow.cluster()*** - tworzy słownik
 - ***np.save()*** - zapisuje słownik do pliku
@@ -69,6 +70,7 @@ W zależności od jego wartości wczytywany jest odpowiedni procent danych.
 Najważniejsze wykorzystane funkcje:
 - ***random.sample(data, amount)*** - wybór losowych próbek 
 ## main
-Wywłoanie fukncji w odpoiedniej kolejności.
+Wywołuje wszystkie wcześniej opisane fukncje, a także wyświetla która z funkcji aktualniee jest wykonywana.
+
 Funkcję learn_bovw można zakomentować po pierwszym urchomieniu programu.
 W takim przypadku słownik będzie wczytywany z pliku voc.npy.
