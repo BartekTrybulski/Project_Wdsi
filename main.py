@@ -112,35 +112,6 @@ def train(data):
 
     return rf
 
-
-def draw_grid(images, n_classes, grid_size, h, w):
-    """
-    Draws images on a grid, with columns corresponding to classes.
-    @param images: Dictionary with images in a form of (class_id, list of np.array images).
-    @param n_classes: Number of classes.
-    @param grid_size: Number of samples per class.
-    @param h: Height in pixels.
-    @param w: Width in pixels.
-    @return: Rendered image
-    """
-    image_all = np.zeros((h, w, 3), dtype=np.uint8)
-    h_size = int(h / grid_size)
-    w_size = int(w / n_classes)
-
-    col = 0
-    for class_id, class_images in images.items():
-        for idx, cur_image in enumerate(class_images):
-            row = idx
-
-            if col < n_classes and row < grid_size:
-                image_resized = cv2.resize(cur_image, (w_size, h_size))
-                image_all[row * h_size: (row + 1) * h_size, col * w_size: (col + 1) * w_size, :] = image_resized
-
-        col += 1
-
-    return image_all
-
-
 def predict(rf, data):
     """
     Predicts labels given a model and saves them as "label_pred" (int) entry for each sample.
@@ -182,54 +153,6 @@ def evaluate(data):
     print('score = %.3f' % (correct / max(correct + incorrect, 1)))
     conf_matrix = confusion_matrix(real, eval)
     print(conf_matrix)
-    return
-
-
-def display(data):
-    """
-    Displays samples of correct and incorrect classification.
-    @param data: List of dictionaries, one for every sample, with entries "image" (np.array with image), "label" (class_id),
-                    "desc" (np.array with descriptor), and "label_pred".
-    @return: Nothing.
-    """
-    n_classes = 2
-
-    corr = {}
-    incorr = {}
-
-    for idx, sample in enumerate(data):
-        if sample['desc'] is not None:
-            if sample['label_pred'] == sample['label']:
-                if sample['label_pred'] not in corr:
-                    corr[sample['label_pred']] = []
-                corr[sample['label_pred']].append(idx)
-
-            else:
-                if sample['label_pred'] not in incorr:
-                    incorr[sample['label_pred']] = []
-                incorr[sample['label_pred']].append(idx)
-
-    grid_size = 8
-
-    # sort according to classes
-    corr = dict(sorted(corr.items(), key=lambda item: item[0]))
-    corr_disp = {}
-    for key, samples in corr.items():
-        idxs = random.sample(samples, min(grid_size, len(samples)))
-        corr_disp[key] = [data[idx]['image'] for idx in idxs]
-    # sort according to classes
-    incorr = dict(sorted(incorr.items(), key=lambda item: item[0]))
-    incorr_disp = {}
-    for key, samples in incorr.items():
-        idxs = random.sample(samples, min(grid_size, len(samples)))
-        incorr_disp[key] = [data[idx]['image'] for idx in idxs]
-
-    image_corr = draw_grid(corr_disp, n_classes, grid_size, 800, 600)
-    image_incorr = draw_grid(incorr_disp, n_classes, grid_size, 800, 600)
-
-    cv2.imshow('images correct', image_corr)
-    cv2.imshow('images incorrect', image_incorr)
-    cv2.waitKey()
     return
 
 
@@ -295,7 +218,6 @@ def main():
     print('testing on testing dataset')
     data_test = predict(rf, data_test)
     evaluate(data_test)
-    display(data_test)
 
     return
 
