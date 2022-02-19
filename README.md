@@ -27,38 +27,47 @@ Najważniejsze wykorzystane funkcje:
 ## learn_bovw
 
 Najważniejsze wykorzystane funkcje:
-- ***cv2.BOWKMeansTrainer()*** - podstawowa klasa do trenowania, określa wielkość słownika
-- ***cv2.SIFT_create()*** - klasa do wyodrębnienia kluczowych punktów i deskryptorów
+- ***cv2.BOWKMeansTrainer()*** - tworzy zbiór treningowy, określa jego rozmiar (w programie zmienna bow)
+- ***cv2.SIFT_create()*** - tworzy klase do wyodrębnienia kluczowych punktów i deskryptorów
 - ***sift.detect()*** - znajduje kluczowe punkty na obrazkach
-- ***sift.compute()*** - oblicz deskryptory z znalenionych punktów
+- ***sift.compute()*** - oblicza deskryptory dla znalezioch punktów
+- ***bow.add(desc)*** - dodaje opis do zbioru 
 - ***bow.cluster()*** - tworzy słownik
-- ***np.save()*** - zapis do pliku
+- ***np.save()*** - zapisuje słownik do pliku
 ## extract features
-Wyodrębnianie cech i zapis opisów:
+Funkcja ta odpowiada za wyodrębnianie cech zawartych w słowniku dla poszczególnych próbek wczytanego zbioru.
 
-- ***cv2.FlannBasedMatcher_create()*** 
-- ***cv2.BOWImgDescriptorExtractor(sift, flann)***
-- ***bow.setVocabulary(vocabulary)*** 
+
+Najważniejsze wykorzystane funkcje:
+- ***cv2.FlannBasedMatcher_create()***  - tworzy moduł dopasowania
+- ***cv2.BOWImgDescriptorExtractor(sift, flann)*** - tworzy moduł dla opisów
+- ***bow.setVocabulary(vocabulary)*** - zwraca wizulany słownik
+
 ## train
-Trenowanie klasyfikatora Random Forest:
+Funkcja odpowiadająca ze trenowanie klasyfikatora Random Forest.
 
-- ***RandomForestClassifier()*** -
-- ***rf.fit(descs, labels)*** -
+Najważniejsze wykorzystane funkcje:
+- ***squeeze(0)*** - usuwanie osi
+- ***RandomForestClassifier()*** - tworzy klasyfikator Random Forest (w programnie rf)
+- ***rf.fit(descs, labels)*** - tworzy "las drzew" z zestawu treningowego
 ## predict
 Przewiduje etykiete danego modelu i zapise jako wpis „label_pred” dla każdej próbki:
 
+Najważniejsze wykorzystane funkcje:
 - ***rf.predict(sample['desc'])*** - przewidywanie klasy z opisu 
 
 ## evaluate
-Ocena wyników klasyfikacji:
-
-Funckja sprawdza poprawność klasyfikacji z opisami z plików xml.
+Ocena wyników klasyfikacji. Funckja sprawdza poprawność klasyfikacji z opisami z plików xml.
 Następnie oblicza i wyświetla procentowy wynik poprawności klasyfikacji miary mAP oraz macierz pomyłek.
-
+Odpiwada także za wypisywanie nazw zdjęć na których znajdują się znaki przejść dla pieszych.
 ## display_dataset_stats
-Wyświetlanie satystyk zestawu danych:
+Funkcja ta wyświetla ilość obrazów każdego zbioru.
 ## balance_dataset
-Balanusje próbki zgodnie z podanym współczynnikiem
+Balanusje próbki zgodnie z podanym współczynnikiem (zakres od 0 do 1)
+W zależności od jego wartości wczytywany jest odpowiedni procent danych.
+
+Najważniejsze wykorzystane funkcje:
+- ***random.sample(data, amount)*** - wybór losowych próbek 
 ## main
 Wywłoanie fukncji w odpoiedniej kolejności.
 Funkcję learn_bovw można zakomentować po pierwszym urchomieniu programu.
